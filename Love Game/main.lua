@@ -4,6 +4,12 @@ function initGame()
   
   love.window.setTitle("Little Love Game");  
   
+  skyBlue = {.43, .77, 80}
+  green = {.45, .74, .18}
+  
+  --background color
+  love.graphics.setBackgroundColor(skyBlue)
+  
   --Player
   player = {
       x = 380 ,   
@@ -18,15 +24,9 @@ function initGame()
       }
 
 --Obstacle
-  Obstacle = {
-  x = 500,
-  y = 450,
-  width = 30,
-  height = 30,
-  speed = 100
-  }
+  
 
-  listOfObstacles = {}
+  
 
 --Timer
 timer = 5.0
@@ -38,6 +38,15 @@ timer = 5.0
       width = 800,
       height = 100
     }
+
+Obstacle = {
+  x = love.graphics.getWidth() - 54,
+  y = love.graphics.getHeight() - 30 - floor.height,
+  width = 54,
+  height = 30,
+  speed = 120
+}
+listOfObstacles = {}
 
 end
 
@@ -54,11 +63,14 @@ function love.update(dt)
   
   timer = timer - dt
   spawObstacle(timer)
-  Obstacle.x = Obstacle.x - Obstacle.speed * dt
 
   for i, v in ipairs(listOfObstacles) do
-    Obstacle.x = Obstacle.x + Obstacle.speed * dt
+   Obstacle.x = Obstacle.x - Obstacle.speed * dt
   end
+  
+  if Obstacle.x + Obstacle.width < 0 then
+    Obstacle.x = love.graphics.getWidth()
+    end
   
 end
 
@@ -75,18 +87,18 @@ function love.draw()
     mode = "line"
     end
   
+  love.graphics.setColor(1, 1, .2)
   love.graphics.rectangle(mode, player.x, player.y, player.width, player.height)
+  love.graphics.setColor(green)
   love.graphics.rectangle(mode, floor.x, floor.y, floor.width, floor.height)
   
   print(timer)
   
   for i, v in ipairs(listOfObstacles) do
-    love.graphics.rectangle(mode, Obstacle.x, Obstacle.y, Obstacle.width, Obstacle.height)
+    love.graphics.rectangle("fill", Obstacle.x, Obstacle.y, Obstacle.width, Obstacle.height)
   end
   
 end
-
-
 
 
 --
@@ -113,7 +125,7 @@ function playerMovement(dt)
     end
     
     
-    if player.isJumping == true then
+    if player.isJumping == true and player.y < floor.y  then
   player.gravity = player.gravity + player.weight * dt
   player.y = player.y + player.gravity * dt
   end
@@ -163,22 +175,30 @@ function love.keypressed(key)
 end
 
 
-    function createObstacle()
+  function createObstacle()
 
-  Obstacle.x = 500
-  Obstacle.y = 450
-  Obstacle.width = 30
+  Obstacle = {}
+  Obstacle.x = love.graphics.getWidth() - 54
+  Obstacle.y = love.graphics.getHeight() - 30 - 100
+  Obstacle.width = 54
   Obstacle.height = 30
-  Obstacle.speed = 100
+  Obstacle.speed = 120
 
   table.insert(listOfObstacles, Obstacle)
 
 end
 
 function spawObstacle(timer)
-    if timer <= 0 then
-    timer = 5.0
+    --if timer <= 0 then
+    --timer = 5.0
+    if love.keyboard.isDown("e") then
     createObstacle()
     end
 end
+
+function infiniteObstacles()
+  Obstacle.x = love.graphics.getWidth() - 54
+  Obstacle.y = love.graphics.getHeight() - 150 - 100
+  Obstacle.speed = 120
+  end
 
