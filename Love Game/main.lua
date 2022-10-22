@@ -7,7 +7,9 @@ function initGame()
   skyBlue = {.43, .77, 80}
   green = {.45, .74, .18}
   red = {255, 0, 0}
-  yellow = {1, 1, .2}
+  yellow = {1, 1, .2}  
+  black = {0, 0, 0}
+
   
   --background color
   love.graphics.setBackgroundColor(skyBlue)
@@ -57,6 +59,7 @@ end
 --Update
 --
 function love.update(dt)
+  
   playerMovement(dt)
 
 if Obstacle.isActive == false then
@@ -86,13 +89,21 @@ end
 
 
 function love.draw()
-  
+    
   local mode 
   if checkCollision(player, floor) then
     mode = "fill"
     player.isJumping = false
     player.gravity = 0
   
+  else
+    mode = "fill"
+  end
+  
+    local mode 
+  if checkCollision(player, Obstacle) then
+    mode = "line"
+    restartGame()
   else
     mode = "fill"
   end
@@ -204,5 +215,9 @@ end
 
 function spawObstacle()
   createObstacle()
+end
+
+function restartGame()
+  initGame()
 end
 
