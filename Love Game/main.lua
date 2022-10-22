@@ -19,31 +19,36 @@ function initGame()
   scoreSound = love.audio.newSource('res/score.wav', 'static')
   love.audio.setVolume (0.5)
   
-  -- Font
+-- Font
   font = love.graphics.newFont('res/font.TTF', 50)
   
-  --Upload animations
-frames = {}
+--Upload animations
+  frames = {}
 
-    for i=1,3 do
-        table.insert(frames, love.graphics.newImage("res/run" .. i .. ".png"))
-    end
-    
+      for i=1,3 do
+          table.insert(frames, love.graphics.newImage("res/run" .. i .. ".png"))
+      end
+      
   frames2 = {}  
-    for i=1,3 do
-        table.insert(frames2, love.graphics.newImage("res/runBackward" .. i .. ".png"))
-    end
+      for i=1,3 do
+          table.insert(frames2, love.graphics.newImage("res/runBackward" .. i .. ".png"))
+      end
+      
+  enemyFrames = {}
+      
+      for i=1,3 do
+          table.insert(enemyFrames, love.graphics.newImage("res/fox" .. i .. ".png"))
+      end
     
-    currentFrame = 1
-  
-  
+  currentFrame = 1
+
   
   --Player
   player = {
     x = 380 ,   
     y = 441,
     speed = 300,
-    width = playerSprite:getWidth() - 10 ,
+    width = playerSprite:getWidth() - 10,
     height = playerSprite:getHeight() ,
     jumpForce=50,
     gravity = 0,
@@ -193,9 +198,12 @@ function love.draw()
   love.graphics.rectangle("fill", floor.x, floor.y, floor.width, floor.height)
    
    --Draw Obstacle
+   --fox
   for i, v in ipairs(listOfObstacles) do
+    love.graphics.setColor(1,1,1)
+    love.graphics.draw(enemyFrames[math.floor(currentFrame)], Obstacle.x, Obstacle.y - 18)
     love.graphics.setColor(red)
-    love.graphics.rectangle("fill", Obstacle.x, Obstacle.y, Obstacle.width, Obstacle.height)
+    love.graphics.rectangle("line", Obstacle.x, Obstacle.y, Obstacle.width, Obstacle.height)
   end
   
   --Draw ground texture
@@ -203,8 +211,9 @@ function love.draw()
   love.graphics.draw(groundSprite, floor.x, floor.y)
   
   --Draw front player
+    love.graphics.rectangle("line", player.x, player.y, player.width, player.height)
   if player.isJumping == true or player.isStand == true then
-  love.graphics.draw(playerSprite, player.x, player.y)
+  love.graphics.draw(playerSprite, player.x -5, player.y)
 end
 
   --Draw animations
@@ -319,7 +328,7 @@ function love.keypressed(key)
 end
 
 
-  function createObstacle()
+function createObstacle()
 
   Obstacle = {}
   Obstacle.x = love.graphics.getWidth() - 54
