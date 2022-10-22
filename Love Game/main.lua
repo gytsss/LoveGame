@@ -92,6 +92,15 @@ function initGame()
     speed = 70,
     isActive = false
   }
+  
+  background = {
+    x = 0,
+    y = 0,
+    width = 1.3,
+    height = 1.2,
+    speed = 20,
+    move = false  
+  }
 
 
   listOfObstacles = {}
@@ -119,6 +128,7 @@ function initGame()
   function love.update(dt)
     
     playerMovement(dt)
+    --backgroundMovement(dt)
 
   if Obstacle.isActive == false and flyObstacle.isActive == false then
     if love.keyboard.isDown("e") then
@@ -133,7 +143,7 @@ function initGame()
   if obstacleTimer >= 3  then
     if Obstacle.speed <=1000 then
       for i, v in ipairs(listOfObstacles) do
-      Obstacle.speed = Obstacle.speed + 20
+      Obstacle.speed = Obstacle.speed + 10
       end
     else 
       for i, v in ipairs(listOfObstacles) do
@@ -144,16 +154,16 @@ function initGame()
     obstacleTimer = 0
   end
 
---Obstacle speed logic
+--FlyObstacle speed logic
   flyObstacleTimer = flyObstacleTimer + dt
   if flyObstacleTimer >= 6  then
     if flyObstacle.speed <=1000 then
       for i, v in ipairs(listOfObstacles) do
-      flyObstacle.speed = flyObstacle.speed + 10
+      flyObstacle.speed = flyObstacle.speed + 5
       end
     else 
       for i, v in ipairs(listOfObstacles) do
-      flyObstacle.speed = flyObstacle.speed + 5
+      flyObstacle.speed = flyObstacle.speed + 2
     end
   end
   
@@ -238,7 +248,8 @@ end
   function love.draw()
     
 --Draw background
-  love.graphics.draw(backgroundSprite, 0, 0, 0, 1.3, 1.2)
+  love.graphics.draw(backgroundSprite, background.x, background.y, 0, background.width, background.height)  
+
   
 --Draw ground
   love.graphics.setColor(green)
@@ -411,7 +422,20 @@ end
     createObstacle()
     createFlyObstacle()
   end
-
+  
+  function backgroundMovement(dt)
+    if love.keyboard.isDown("e") then
+      background.move = true
+    end
+    
+    if background.move == true then
+    background.x = background.x - background.speed * dt    
+    end
+  
+    if background.x + background.width < 0 then
+    background.x = love.graphics.getWidth()
+    end
+  end
   function restartGame()
     initGame()
   end
