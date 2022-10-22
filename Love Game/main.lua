@@ -48,6 +48,10 @@ Obstacle = {
 }
 listOfObstacles = {}
 
+
+groundSprite = love.graphics.newImage("res/ground.png")
+
+
 end
 
 function love.load()
@@ -97,28 +101,32 @@ function love.draw()
     player.gravity = 0
   
   else
-    mode = "fill"
-  end
-  
-    local mode 
-  if checkCollision(player, Obstacle) then
     mode = "line"
-    restartGame()
-  else
-    mode = "fill"
   end
   
+  if checkCollision(player, Obstacle) then
+    restartGame()
+  end
+  
+  
+
   love.graphics.setColor(yellow)
   love.graphics.rectangle(mode, player.x, player.y, player.width, player.height)
   love.graphics.setColor(green)
   love.graphics.rectangle(mode, floor.x, floor.y, floor.width, floor.height)
-  
-  --print(timer)
+   
+  print(timer)
   
   for i, v in ipairs(listOfObstacles) do
     love.graphics.setColor(red)
     love.graphics.rectangle("fill", Obstacle.x, Obstacle.y, Obstacle.width, Obstacle.height)
   end
+  
+  
+  love.graphics.setColor(1,1,1)
+  love.graphics.draw(groundSprite, floor.x, floor.y)
+  
+  
   
 end
 
