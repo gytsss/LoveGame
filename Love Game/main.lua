@@ -11,12 +11,9 @@ function initGame()
   black = {0, 0, 0}
 
 groundSprite = love.graphics.newImage("res/ground.png")
+backgroundSprite = love.graphics.newImage("res/background.png")
 playerSprite = love.graphics.newImage("res/player.png")
 
-
-
-  --background color
-  love.graphics.setBackgroundColor(skyBlue)
   
   --Player
   player = {
@@ -34,16 +31,16 @@ playerSprite = love.graphics.newImage("res/player.png")
     isStand = true
 }
 
---Timer
-timer = 0
 
-  
-floor = {
+  --Ground
+  floor = {
     x = 0,
     y = 500,
     width = 800,
     height = 100
 }
+
+
 --Obstacle
 Obstacle = {
   x = love.graphics.getWidth() - 54,
@@ -53,9 +50,14 @@ Obstacle = {
   speed = 70,
   isActive = false
 }
+
 listOfObstacles = {}
 
---Upload animation
+--Timer
+timer = 0
+
+
+--Upload animations
 frames = {}
 
     for i=1,3 do
@@ -91,6 +93,7 @@ if Obstacle.isActive == false then
   end
 end
   
+  --Obstacle speed logic
   timer = timer + dt
   if timer >= 3  then
     if Obstacle.speed <=1000 then
@@ -105,6 +108,17 @@ end
   
     timer = 0
 end
+
+--Check collisions
+  if checkCollision(player, floor) then
+      mode = "fill"
+      player.isJumping = false
+      player.gravity = 0
+  end
+  
+  if checkCollision(player, Obstacle) then
+    restartGame()
+  end
 
   
 
@@ -130,16 +144,16 @@ end
     player.isGoingBackward = false
     player.isStand =false
   end
-  --Run backward animation
-if player.isGoingBackward == true and player.isJumping == false then
-  player.isGoingForward = false
-  player.isStand = false
-end
---stay stand animation
-if player.isStand == true then
-  player.isGoingBackward = false
-  player.isGoingForward = false
-end
+    --Run backward animation
+  if player.isGoingBackward == true and player.isJumping == false then
+    player.isGoingForward = false
+    player.isStand = false
+  end
+    --Stay stand animation
+  if player.isStand == true then
+    player.isGoingBackward = false
+    player.isGoingForward = false
+  end
 
 
 end
@@ -147,27 +161,18 @@ end
 
 function love.draw()
     
-
-  if checkCollision(player, floor) then
-    mode = "fill"
-    player.isJumping = false
-    player.gravity = 0
-  end
-  
-  if checkCollision(player, Obstacle) then
-    restartGame()
-  end
-  
+  --Draw background
+  love.graphics.draw(backgroundSprite, 0, 0, 0, 1.3, 1.2)
   
   --Draw player collision
   love.graphics.setColor(yellow)
   love.graphics.rectangle("line", player.x, player.y, player.width, player.height)
+  
   --Draw ground
   love.graphics.setColor(green)
   love.graphics.rectangle("fill", floor.x, floor.y, floor.width, floor.height)
    
-  --print(timer)
-  
+   --Draw Obstacle
   for i, v in ipairs(listOfObstacles) do
     love.graphics.setColor(red)
     love.graphics.rectangle("fill", Obstacle.x, Obstacle.y, Obstacle.width, Obstacle.height)
@@ -176,11 +181,13 @@ function love.draw()
   --Draw ground texture
   love.graphics.setColor(1,1,1)
   love.graphics.draw(groundSprite, floor.x, floor.y)
+  
   --Draw front player
   if player.isJumping == true or player.isStand == true then
   love.graphics.draw(playerSprite, player.x, player.y)
-  end
-  --Draw animation
+end
+
+  --Draw animations
   if player.isGoingForward == true then
   love.graphics.draw(frames[math.floor(currentFrame)], player.x, player.y)
 end
@@ -217,7 +224,7 @@ function playerMovement(dt)
       player.isGoingForward = false
   end
   
-  
+  --Jump
   if love.keyboard.isDown("space")
   and player.isJumping == false then
     jump(dt)
@@ -226,6 +233,7 @@ function playerMovement(dt)
       player.isGoingForward = false
   end
   
+  --Down
     if love.keyboard.isDown("s") 
     and player.isJumping == true  then
       player.gravity = player.gravity + player.weight * dt
@@ -235,7 +243,7 @@ function playerMovement(dt)
       player.isGoingForward = false
   end
     
-    
+    --Jump gravity
     if player.isJumping == true and player.y < floor.y  then
   player.gravity = player.gravity + player.weight * dt
   player.y = player.y + player.gravity * dt
