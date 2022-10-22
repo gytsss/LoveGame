@@ -4,10 +4,8 @@ function initGame()
   
   love.window.setTitle("Little Love Game");  
   
-  skyBlue = {.43, .77, 80}
   green = {.45, .74, .18}
   red = {255, 0, 0}
-  yellow = {1, 1, .2}  
   black = {0, 0, 0}
 
 --Sprites
@@ -68,8 +66,8 @@ frames = {}
 
 --Obstacle
 Obstacle = {
-  x = love.graphics.getWidth() - 54,
-  y = love.graphics.getHeight() - 30 - floor.height,
+  x = love.graphics.getWidth(),
+  y = 0,
   width = 54,
   height = 30,
   speed = 70,
@@ -84,7 +82,6 @@ timer = 0
  --Score
 score = 0
 scoreOnce = 0
-
 
 
 end
@@ -191,10 +188,6 @@ function love.draw()
   --Draw background
   love.graphics.draw(backgroundSprite, 0, 0, 0, 1.3, 1.2)
   
-  --Draw player collision
-  love.graphics.setColor(yellow)
-  love.graphics.rectangle("line", player.x, player.y, player.width, player.height)
-  
   --Draw ground
   love.graphics.setColor(green)
   love.graphics.rectangle("fill", floor.x, floor.y, floor.width, floor.height)
@@ -223,7 +216,7 @@ if player.isGoingBackward == true then
 end
 
   --Draw score
-  love.graphics.setColor(0, 0, 0)
+  love.graphics.setColor(black)
   love.graphics.setFont(font)
   love.graphics.print(score,love.graphics.getWidth() / 2 - 20 , 50)
   love.graphics.setColor(1, 1, 1)
