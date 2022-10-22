@@ -23,7 +23,7 @@ playerSprite = love.graphics.newImage("res/player.png")
     x = 380 ,   
     y = 441,
     speed = 300,
-    width = playerSprite:getWidth() ,
+    width = playerSprite:getWidth() - 10 ,
     height = playerSprite:getHeight() ,
     jumpForce=50,
     gravity = 0,
@@ -92,12 +92,21 @@ if Obstacle.isActive == false then
 end
   
   timer = timer + dt
-  if timer >= 3 then
-    timer = 0
-    for i, v in ipairs(listOfObstacles) do
-    Obstacle.speed = Obstacle.speed + 10
+  if timer >= 3  then
+    if Obstacle.speed <=1000 then
+      for i, v in ipairs(listOfObstacles) do
+      Obstacle.speed = Obstacle.speed + 100
+      end
+    else 
+      for i, v in ipairs(listOfObstacles) do
+      Obstacle.speed = Obstacle.speed + 5
     end
+  end
+  
+    timer = 0
 end
+
+  
 
   for i, v in ipairs(listOfObstacles) do
   Obstacle.x = Obstacle.x - Obstacle.speed * dt
@@ -114,23 +123,23 @@ end
         currentFrame = 1
     end
     
+    
+    --Animations conditions 
+    --Run forward animation
   if player.isGoingForward == true and player.isJumping == false then
     player.isGoingBackward = false
     player.isStand =false
   end
-  
+  --Run backward animation
 if player.isGoingBackward == true and player.isJumping == false then
   player.isGoingForward = false
   player.isStand = false
 end
-
+--stay stand animation
 if player.isStand == true then
   player.isGoingBackward = false
   player.isGoingForward = false
 end
-
-
-
 
 
 end
@@ -138,14 +147,11 @@ end
 
 function love.draw()
     
-  local mode 
+
   if checkCollision(player, floor) then
     mode = "fill"
     player.isJumping = false
     player.gravity = 0
-  
-  else
-    mode = "line"
   end
   
   if checkCollision(player, Obstacle) then
@@ -153,11 +159,12 @@ function love.draw()
   end
   
   
-
+  --Draw player collision
   love.graphics.setColor(yellow)
   love.graphics.rectangle("line", player.x, player.y, player.width, player.height)
+  --Draw ground
   love.graphics.setColor(green)
-  love.graphics.rectangle(mode, floor.x, floor.y, floor.width, floor.height)
+  love.graphics.rectangle("fill", floor.x, floor.y, floor.width, floor.height)
    
   --print(timer)
   
