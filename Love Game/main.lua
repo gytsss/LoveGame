@@ -6,45 +6,43 @@ function initGame()
   
   skyBlue = {.43, .77, 80}
   green = {.45, .74, .18}
+  red = {255, 0, 0}
+  yellow = {1, 1, .2}
   
   --background color
   love.graphics.setBackgroundColor(skyBlue)
   
   --Player
   player = {
-      x = 380 ,   
-      y = 441,
-      speed = 300,
-      width = 40  ,
-      height = 60,
-      jumpForce=50,
-      gravity = 0,
-      weight = 800,
-      isJumping = false
-      }
-
---Obstacle
-  
-
-  
+    x = 380 ,   
+    y = 441,
+    speed = 300,
+    width = 40  ,
+    height = 60,
+    jumpForce=50,
+    gravity = 0,
+    weight = 800,
+    isJumping = false
+}
 
 --Timer
-timer = 5.0
+timer = 0
 
   
-  floor = {
-      x = 0,
-      y = 500,
-      width = 800,
-      height = 100
-    }
-
+floor = {
+    x = 0,
+    y = 500,
+    width = 800,
+    height = 100
+}
+--Obstacle
 Obstacle = {
   x = love.graphics.getWidth() - 54,
   y = love.graphics.getHeight() - 30 - floor.height,
   width = 54,
   height = 30,
-  speed = 120
+  speed = 70,
+  isActive = false
 }
 listOfObstacles = {}
 
@@ -60,12 +58,24 @@ end
 --
 function love.update(dt)
   playerMovement(dt)
+
+if Obstacle.isActive == false then
+  if love.keyboard.isDown("e") then
+  spawObstacle()
+  Obstacle.isActive = true
+  end
+end
   
-  timer = timer - dt
-  spawObstacle(timer)
+  timer = timer + dt
+  if timer >= 3 then
+    timer = 0
+    for i, v in ipairs(listOfObstacles) do
+    Obstacle.speed = Obstacle.speed + 10
+    end
+end
 
   for i, v in ipairs(listOfObstacles) do
-   Obstacle.x = Obstacle.x - Obstacle.speed * dt
+  Obstacle.x = Obstacle.x - Obstacle.speed * dt
   end
   
   if Obstacle.x + Obstacle.width < 0 then
@@ -82,19 +92,20 @@ function love.draw()
     mode = "fill"
     player.isJumping = false
     player.gravity = 0
-    
-  else
-    mode = "line"
-    end
   
-  love.graphics.setColor(1, 1, .2)
+  else
+    mode = "fill"
+  end
+  
+  love.graphics.setColor(yellow)
   love.graphics.rectangle(mode, player.x, player.y, player.width, player.height)
   love.graphics.setColor(green)
   love.graphics.rectangle(mode, floor.x, floor.y, floor.width, floor.height)
   
-  print(timer)
+  --print(timer)
   
   for i, v in ipairs(listOfObstacles) do
+    love.graphics.setColor(red)
     love.graphics.rectangle("fill", Obstacle.x, Obstacle.y, Obstacle.width, Obstacle.height)
   end
   
@@ -122,8 +133,7 @@ function playerMovement(dt)
   if love.keyboard.isDown("space")
   and player.isJumping == false then
     jump(dt)
-    end
-    
+  end    
     
     if player.isJumping == true and player.y < floor.y  then
   player.gravity = player.gravity + player.weight * dt
@@ -135,25 +145,23 @@ end
 
 function checkCollision(a,b)
   
+  local a_left = a.x
+  local a_right = a.x + a.width
+  local a_top = a.y
+  local a_bottom = a.y + a.height
+
+  local b_left = b.x
+  local b_right = b.x + b.width
+  local b_top = b.y
+  local b_bottom = b.y + b.height
   
-
-    local a_left = a.x
-    local a_right = a.x + a.width
-    local a_top = a.y
-    local a_bottom = a.y + a.height
-
-    local b_left = b.x
-    local b_right = b.x + b.width
-    local b_top = b.y
-    local b_bottom = b.y + b.height
-    
-    if  a_right > b_left
-    and a_left < b_right
-    and a_bottom > b_top
-    and a_top < b_bottom then
-        return true
-    else
-        return false
+  if  a_right > b_left
+  and a_left < b_right
+  and a_bottom > b_top
+  and a_top < b_bottom then
+    return true
+  else
+      return false
   end
 end
 
@@ -182,23 +190,12 @@ end
   Obstacle.y = love.graphics.getHeight() - 30 - 100
   Obstacle.width = 54
   Obstacle.height = 30
-  Obstacle.speed = 120
-
+  Obstacle.speed = 140
   table.insert(listOfObstacles, Obstacle)
 
 end
 
-function spawObstacle(timer)
-    --if timer <= 0 then
-    --timer = 5.0
-    if love.keyboard.isDown("e") then
-    createObstacle()
-    end
+function spawObstacle()
+  createObstacle()
 end
-
-function infiniteObstacles()
-  Obstacle.x = love.graphics.getWidth() - 54
-  Obstacle.y = love.graphics.getHeight() - 150 - 100
-  Obstacle.speed = 120
-  end
 
