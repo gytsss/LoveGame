@@ -10,10 +10,35 @@ function initGame()
   yellow = {1, 1, .2}  
   black = {0, 0, 0}
 
-groundSprite = love.graphics.newImage("res/ground.png")
-backgroundSprite = love.graphics.newImage("res/background.png")
-playerSprite = love.graphics.newImage("res/player.png")
+--Sprites
+  groundSprite = love.graphics.newImage("res/ground.png")
+  backgroundSprite = love.graphics.newImage("res/background.png")
+  playerSprite = love.graphics.newImage("res/player.png")
 
+--Sound effects
+  jumpSound = love.audio.newSource('res/jump.wav', 'static')
+  explosionSound = love.audio.newSource('res/dead.wav', 'static')
+  scoreSound = love.audio.newSource('res/score.wav', 'static')
+  love.audio.setVolume (0.5)
+  
+  -- Font
+  font = love.graphics.newFont('res/font.TTF', 50)
+  
+  --Upload animations
+frames = {}
+
+    for i=1,3 do
+        table.insert(frames, love.graphics.newImage("res/run" .. i .. ".png"))
+    end
+    
+  frames2 = {}  
+    for i=1,3 do
+        table.insert(frames2, love.graphics.newImage("res/runBackward" .. i .. ".png"))
+    end
+    
+    currentFrame = 1
+  
+  
   
   --Player
   player = {
@@ -55,21 +80,11 @@ listOfObstacles = {}
 
 --Timer
 timer = 0
+ 
+ --Score
+score = 0
+scoreOnce = 0
 
-
---Upload animations
-frames = {}
-
-    for i=1,3 do
-        table.insert(frames, love.graphics.newImage("res/run" .. i .. ".png"))
-    end
-    
-  frames2 = {}  
-    for i=1,3 do
-        table.insert(frames2, love.graphics.newImage("res/runBackward" .. i .. ".png"))
-    end
-    
-    currentFrame = 1
 
 
 end
@@ -117,6 +132,7 @@ end
   end
   
   if checkCollision(player, Obstacle) then
+    explosionSound:play()
     restartGame()
   end
 
@@ -126,9 +142,20 @@ end
   Obstacle.x = Obstacle.x - Obstacle.speed * dt
   end
   
+  --Obstacle respawn
   if Obstacle.x + Obstacle.width < 0 then
     Obstacle.x = love.graphics.getWidth()
+    scoreOnce = 0
     end
+  
+  
+  --Score logic
+  if Obstacle.x < player.x  and scoreOnce == 0  then 
+    score = score + 1
+    scoreSound:play()
+    scoreOnce = 1
+    end
+  
   
   --Player animation frames update
   currentFrame = currentFrame + 10 * dt
@@ -193,7 +220,13 @@ end
 end
 if player.isGoingBackward == true then
   love.graphics.draw(frames2[math.floor(currentFrame)], player.x, player.y)
-  end
+end
+
+  --Draw score
+  love.graphics.setColor(0, 0, 0)
+  love.graphics.setFont(font)
+  love.graphics.print(score,love.graphics.getWidth() / 2 - 20 , 50)
+  love.graphics.setColor(1, 1, 1)
   
   
 end
@@ -277,6 +310,7 @@ end
 
 
 function jump(dt)
+  jumpSound:play()
   player.gravity = -300
   player.y = player.y + player.gravity * dt   
   if player.y < 440 then
