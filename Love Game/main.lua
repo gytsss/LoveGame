@@ -10,7 +10,11 @@ function initGame()
   yellow = {1, 1, .2}  
   black = {0, 0, 0}
 
-  
+groundSprite = love.graphics.newImage("res/ground.png")
+playerSprite = love.graphics.newImage("res/player.png")
+
+
+
   --background color
   love.graphics.setBackgroundColor(skyBlue)
   
@@ -19,12 +23,15 @@ function initGame()
     x = 380 ,   
     y = 441,
     speed = 300,
-    width = 40  ,
-    height = 60,
+    width = playerSprite:getWidth() ,
+    height = playerSprite:getHeight() ,
     jumpForce=50,
     gravity = 0,
-    weight = 800,
-    isJumping = false
+    weight = 700,
+    isJumping = false,
+    isGoingForward = false,
+    isGoingBackward=false,
+    isStand = true
 }
 
 --Timer
@@ -48,8 +55,19 @@ Obstacle = {
 }
 listOfObstacles = {}
 
+--Upload animation
+frames = {}
 
-groundSprite = love.graphics.newImage("res/ground.png")
+    for i=1,3 do
+        table.insert(frames, love.graphics.newImage("res/run" .. i .. ".png"))
+    end
+    
+  frames2 = {}  
+    for i=1,3 do
+        table.insert(frames2, love.graphics.newImage("res/runBackward" .. i .. ".png"))
+    end
+    
+    currentFrame = 1
 
 
 end
@@ -89,6 +107,32 @@ end
     Obstacle.x = love.graphics.getWidth()
     end
   
+  --Player animation frames update
+  currentFrame = currentFrame + 10 * dt
+  
+  if currentFrame >= 4 then
+        currentFrame = 1
+    end
+    
+  if player.isGoingForward == true and player.isJumping == false then
+    player.isGoingBackward = false
+    player.isStand =false
+  end
+  
+if player.isGoingBackward == true and player.isJumping == false then
+  player.isGoingForward = false
+  player.isStand = false
+end
+
+if player.isStand == true then
+  player.isGoingBackward = false
+  player.isGoingForward = false
+end
+
+
+
+
+
 end
 
 
@@ -111,21 +155,31 @@ function love.draw()
   
 
   love.graphics.setColor(yellow)
-  love.graphics.rectangle(mode, player.x, player.y, player.width, player.height)
+  love.graphics.rectangle("line", player.x, player.y, player.width, player.height)
   love.graphics.setColor(green)
   love.graphics.rectangle(mode, floor.x, floor.y, floor.width, floor.height)
    
-  print(timer)
+  --print(timer)
   
   for i, v in ipairs(listOfObstacles) do
     love.graphics.setColor(red)
     love.graphics.rectangle("fill", Obstacle.x, Obstacle.y, Obstacle.width, Obstacle.height)
   end
   
-  
+  --Draw ground texture
   love.graphics.setColor(1,1,1)
   love.graphics.draw(groundSprite, floor.x, floor.y)
-  
+  --Draw front player
+  if player.isJumping == true or player.isStand == true then
+  love.graphics.draw(playerSprite, player.x, player.y)
+  end
+  --Draw animation
+  if player.isGoingForward == true then
+  love.graphics.draw(frames[math.floor(currentFrame)], player.x, player.y)
+end
+if player.isGoingBackward == true then
+  love.graphics.draw(frames2[math.floor(currentFrame)], player.x, player.y)
+  end
   
   
 end
@@ -140,24 +194,38 @@ function playerMovement(dt)
   if love.keyboard.isDown("d") 
   and player.x + player.width < love.graphics.getWidth()   then
       player.x = player.x + player.speed * dt
+      player.isGoingForward = true
+      player.isGoingBackward = false
+    else 
+      player.isStand=true
+      player.isGoingForward = false
+      player.isGoingBackward = false
   end
   
   --Left
   if love.keyboard.isDown("a") 
    and player.x > 0  then
       player.x = player.x - player.speed * dt
+      player.isGoingBackward = true
+      player.isGoingForward = false
   end
   
   
   if love.keyboard.isDown("space")
   and player.isJumping == false then
     jump(dt)
+    player.isStand = true
+    player.isGoingBackward = false
+      player.isGoingForward = false
   end
   
     if love.keyboard.isDown("s") 
     and player.isJumping == true  then
       player.gravity = player.gravity + player.weight * dt
       player.y = player.y + player.gravity * dt
+      player.isStand = true
+      player.isGoingBackward = false
+      player.isGoingForward = false
   end
     
     
@@ -220,6 +288,7 @@ end
   table.insert(listOfObstacles, Obstacle)
 
 end
+
 
 function spawObstacle()
   createObstacle()
