@@ -133,7 +133,14 @@ function playerMovement(dt)
   if love.keyboard.isDown("space")
   and player.isJumping == false then
     jump(dt)
-  end    
+  end
+  
+    if love.keyboard.isDown("s") 
+    and player.isJumping == true  then
+      player.gravity = player.gravity + player.weight * dt
+      player.y = player.y + player.gravity * dt
+  end
+    
     
     if player.isJumping == true and player.y < floor.y  then
   player.gravity = player.gravity + player.weight * dt
