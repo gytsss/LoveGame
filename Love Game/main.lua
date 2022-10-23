@@ -63,7 +63,7 @@ function initGame()
     width = playerSprite:getWidth() - 20,
     height = playerSprite:getHeight(),
     gravity = 0,
-    weight = 700,
+    weight = 600,
     isJumping = false,
     isGoingForward = false,
     isGoingBackward=false,
