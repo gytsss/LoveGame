@@ -1,8 +1,6 @@
 --Init game
 --
 function initGame()
-  
-  love.window.setTitle("Runimals Game");  
 
 --Colors
   green = {.45, .74, .18}
