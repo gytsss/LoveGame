@@ -259,18 +259,14 @@ end
 --fox
   for i, v in ipairs(listOfObstacles) do
     love.graphics.setColor(1,1,1)
-    love.graphics.draw(enemyFrames[math.floor(currentFrame)], Obstacle.x, Obstacle.y - 18)
-    love.graphics.setColor(red)
-    love.graphics.rectangle("line", Obstacle.x, Obstacle.y, Obstacle.width, Obstacle.height)
+    love.graphics.draw(enemyFrames[math.floor(currentFrame)], Obstacle.x , Obstacle.y - 30, 0, 1.2,1.2)
   end
   
 --Draw FlyObstacle
 --Duck
   for i, v in ipairs(listOfObstacles) do
     love.graphics.setColor(1,1,1)
-    love.graphics.draw(flyEnemyFrames[math.floor(currentFrame)], flyObstacle.x - 50, flyObstacle.y - 50)
-    love.graphics.setColor(red)
-    love.graphics.rectangle("line", flyObstacle.x, flyObstacle.y, flyObstacle.width, flyObstacle.height)
+    love.graphics.draw(flyEnemyFrames[math.floor(currentFrame)], flyObstacle.x , flyObstacle.y - 10, 0, 0.5, 0.5)
   end
   
 --Draw ground texture
