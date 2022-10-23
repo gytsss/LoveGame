@@ -93,15 +93,6 @@ function initGame()
     isActive = false
   }
   
-  background = {
-    x = 0,
-    y = 0,
-    width = 1.3,
-    height = 1.2,
-    speed = 20,
-    move = false  
-  }
-
 
   listOfObstacles = {}
 
@@ -128,7 +119,6 @@ function initGame()
   function love.update(dt)
     
     playerMovement(dt)
-    --backgroundMovement(dt)
 
   if Obstacle.isActive == false and flyObstacle.isActive == false then
     if love.keyboard.isDown("e") then
@@ -248,7 +238,7 @@ end
   function love.draw()
     
 --Draw background
-  love.graphics.draw(backgroundSprite, background.x, background.y, 0, background.width, background.height)  
+  love.graphics.draw(backgroundSprite, 0, 0, 0, 1.3, 1.2)  
 
   
 --Draw ground
@@ -292,7 +282,6 @@ end
   love.graphics.setFont(font)
   love.graphics.print(score,love.graphics.getWidth() / 2 - 20 , 50)
   love.graphics.setColor(1, 1, 1)
-  
   
   end
 
@@ -419,20 +408,11 @@ end
     createFlyObstacle()
   end
   
-  function backgroundMovement(dt)
-    if love.keyboard.isDown("e") then
-      background.move = true
-    end
     
-    if background.move == true then
-    background.x = background.x - background.speed * dt    
-    end
-  
-    if background.x + background.width < 0 then
-    background.x = love.graphics.getWidth()
-    end
-  end
   function restartGame()
     initGame()
   end
+  
+  
+
 
