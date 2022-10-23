@@ -59,10 +59,9 @@ function initGame()
   player = {
     x = 380 ,   
     y = 441,
-    speed = 300,
+    speed = 150,
     width = playerSprite:getWidth() - 20,
     height = playerSprite:getHeight(),
-    jumpForce=50,
     gravity = 0,
     weight = 700,
     isJumping = false,
@@ -91,14 +90,14 @@ function initGame()
     isActive = false
   }
 
-    flyObstacle = {
+  flyObstacle = {
       x = love.graphics.getWidth(),
       y = 0,
       width = 54,
       height = 30,
       speed = 70,
       isActive = false
-    }
+  }
       listOfObstacles = {}
 --Bacground
     background = {
@@ -142,6 +141,8 @@ function initGame()
           spawObstacle()  
         end
       end
+
+    playerMovement(dt)
   
 --Obstacle speed logic
       obstacleTimer = obstacleTimer + dt
@@ -174,8 +175,6 @@ function initGame()
   
       flyObstacleTimer = 0
       end
-
---Check collisions
 
       for i, v in ipairs(listOfObstacles) do
         Obstacle.x = Obstacle.x - Obstacle.speed * dt
@@ -238,7 +237,10 @@ function initGame()
   function love.draw()
     
 --Draw background
-    love.graphics.draw(backgroundSprite, background.x, background.y, 0, background.width, background.height)  
+
+  love.graphics.draw(backgroundSprite, background.x, background.y, 0, background.width, background.height)  
+  love.graphics.draw(backgroundSprite, 0, 0, 0, 1.3, 1.2)  
+
 
   
 --Draw ground
@@ -258,6 +260,7 @@ function initGame()
       love.graphics.setColor(1,1,1)
       love.graphics.draw(flyEnemyFrames[math.floor(currentFrame)], flyObstacle.x , flyObstacle.y - 10, 0, 0.5, 0.5)
     end
+
   
 --Draw ground texture
     love.graphics.setColor(1,1,1)
@@ -446,7 +449,8 @@ end
     Obstacle.isActive = true
     flyObstacle.isActive = true
   end
-  
+
+    
   function restartGame()
     loseTextActive = true
     pause = true
@@ -454,4 +458,3 @@ end
       initGame()
     end
   end
-
