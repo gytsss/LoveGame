@@ -23,7 +23,9 @@ function initGame()
   music:play()
   
 -- Font
-  font = love.graphics.newFont('res/04B_30__.TTF', 50)
+  font = love.graphics.newFont('res/04B_30__.TTF', 50)  
+  smallFont = love.graphics.newFont('res/04B_30__.TTF', 15)
+
   fontActive = true
   
 --Lose text
@@ -302,6 +304,14 @@ function initGame()
       love.graphics.print("Press R to restart",love.graphics.getWidth() / 20 , love.graphics.getHeight() /1.5)
       love.graphics.setColor(1, 1, 1)
     end  
+    
+--Draw Quit text
+    love.graphics.setColor(black)
+    love.graphics.setFont(smallFont)
+    love.graphics.print("Press ESC to",love.graphics.getWidth() / 1.3 , love.graphics.getHeight() / 20)    
+    love.graphics.print("quit game",love.graphics.getWidth() / 1.25 , love.graphics.getHeight() / 13)
+
+    love.graphics.setColor(1, 1, 1)
   
   end
 
