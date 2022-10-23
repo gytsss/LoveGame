@@ -18,7 +18,9 @@ function initGame()
   jumpSound = love.audio.newSource('res/jump.wav', 'static')
   explosionSound = love.audio.newSource('res/dead.wav', 'static')
   scoreSound = love.audio.newSource('res/score.wav', 'static')
+  music = love.audio.newSource('res/music.wav', 'static')
   love.audio.setVolume (0.5)
+  music:play()
   
 -- Font
   font = love.graphics.newFont('res/04B_30__.TTF', 50)
@@ -63,7 +65,7 @@ function initGame()
     width = playerSprite:getWidth() - 20,
     height = playerSprite:getHeight(),
     gravity = 0,
-    weight = 600,
+    weight = 400,
     isJumping = false,
     isGoingForward = false,
     isGoingBackward=false,
@@ -131,7 +133,6 @@ function initGame()
 --Update
 --
   function love.update(dt)
-    
     if pause == false then
       playerMovement(dt)
   
@@ -251,7 +252,7 @@ function initGame()
 --fox
     for i, v in ipairs(listOfObstacles) do
       love.graphics.setColor(1,1,1)
-      love.graphics.draw(enemyFrames[math.floor(currentFrame)], Obstacle.x , Obstacle.y - 30, 0, 1.2,1.2)
+      love.graphics.draw(enemyFrames[math.floor(currentFrame)], Obstacle.x , Obstacle.y - 28, 0, 1.2,1.2)
     end
   
 --Draw FlyObstacle
@@ -389,6 +390,7 @@ function initGame()
       if oneTime == false then
         explosionSound:play()
         oneTime = true
+        music:stop()
       end
       restartGame()
     end
@@ -397,6 +399,7 @@ function initGame()
       if oneTime == false then
         explosionSound:play()
         oneTime = true
+        music:stop()
       end
       restartGame()
     end
@@ -404,7 +407,7 @@ end
 
   function jump(dt)
     jumpSound:play()
-    player.gravity = -300
+    player.gravity = -250
     player.y = player.y + player.gravity * dt   
     if player.y < 440 then
       player.isJumping = true
